@@ -5,7 +5,7 @@ import datetime as dt
 import pytest
 
 from tenx.models import Skill
-from tenx.parse import Command, ParseError, QuickAdd, parse, parse_duration
+from tenx.parse import COMMANDS, Command, ParseError, QuickAdd, parse, parse_duration
 
 TODAY = dt.date(2026, 8, 9)  # a Sunday
 
@@ -221,12 +221,27 @@ def test_command_parsing():
 
 @pytest.mark.parametrize(
     "text,name",
-    [(":undo", "undo"), (":sync", "sync"), (":q", "q"), (":filter off", "filter"), (":year 2024", "year")],
+    [
+        (":undo", "undo"),
+        (":sync", "sync"),
+        (":q", "q"),
+        (":help", "help"),
+        (":filter off", "filter"),
+        (":year 2024", "year"),
+    ],
 )
 def test_simple_commands(text, name):
     result = add(text)
     assert isinstance(result, Command)
     assert result.name == name
+
+
+def test_every_command_documents_itself():
+    """The :help page is built from COMMANDS, so an entry without a usage that
+    starts with its own name, or without a description, is a help-page bug."""
+    for name, (_, _, usage, effect) in COMMANDS.items():
+        assert usage.startswith(f":{name}"), name
+        assert effect.strip(), name
 
 
 @pytest.mark.parametrize(
@@ -242,6 +257,7 @@ def test_simple_commands(text, name):
         ":year 26",  # not a 4-digit year
         ":export json",  # only csv
         ":edit 3",  # missing duration
+        ":help me",  # extra args
     ],
 )
 def test_command_rejects(text):

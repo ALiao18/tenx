@@ -42,24 +42,32 @@ class ParseError:
 
 Parsed = QuickAdd | Command | ParseError
 
-# name -> (min args, max args or None, usage shown on a mistake)
-COMMANDS: dict[str, tuple[int, int | None, str]] = {
-    "new": (1, None, ":new <id> [display name]"),
-    "rename": (2, None, ":rename <id> <new name>"),
-    "archive": (1, 1, ":archive <id>"),
-    "unarchive": (1, 1, ":unarchive <id>"),
-    "rm": (1, 1, ":rm <n|id>"),
-    "edit": (2, 2, ":edit <n|id> <duration|key=value>"),
-    "undo": (0, 0, ":undo"),
-    "filter": (1, 1, ":filter <id> | :filter off"),
-    "year": (1, 1, ":year <YYYY>"),
-    "metric": (2, 2, ":metric <skill> <key> | :metric <skill> -<key>"),
-    "sync": (0, 0, ":sync"),
-    "export": (1, 2, ":export csv [path]"),
-    "conflicts": (0, 0, ":conflicts"),
-    "fix": (2, 2, ":fix <n> <mine|theirs|keep|drop>"),
-    "default": (1, 1, ":default <minutes|off>"),
-    "q": (0, 0, ":q"),
+# name -> (min args, max args or None, usage shown on a mistake, what it does).
+# The last two also make up the :help page, so a command can't ship without
+# documentation that matches what parse_command actually accepts.
+COMMANDS: dict[str, tuple[int, int | None, str, str]] = {
+    "help": (0, 0, ":help", "this page - every command and every skill's parameters"),
+    "rm": (1, 1, ":rm <n|id>", "delete a session (n indexes the last list shown)"),
+    "edit": (2, 2, ":edit <n|id> <duration|key=value>", "change a session's duration or one of its metrics"),
+    "undo": (0, 0, ":undo", "delete the last session added since launch"),
+    "filter": (1, 1, ":filter <id> | :filter off", "scope the heatmap to one skill, or back to all"),
+    "year": (1, 1, ":year <YYYY>", "show a different year in the heatmap"),
+    "new": (1, None, ":new <id> [display name]", "create a skill; the id is permanent, the name editable"),
+    "rename": (2, None, ":rename <id> <new name>", "change a skill's display name (the id stays)"),
+    "archive": (1, 1, ":archive <id>", "hide a skill from the table and heatmap; hours still count"),
+    "unarchive": (1, 1, ":unarchive <id>", "bring an archived skill back"),
+    "metric": (
+        2,
+        2,
+        ":metric <skill> <key> | :metric <skill> -<key>",
+        "start or stop recording a custom key=value metric",
+    ),
+    "default": (1, 1, ":default <minutes|off>", "minutes logged when a skill is typed with no duration"),
+    "sync": (0, 0, ":sync", "pull and push now instead of waiting for the debounce"),
+    "conflicts": (0, 0, ":conflicts", "list edits two machines disagreed on"),
+    "fix": (2, 2, ":fix <n> <mine|theirs|keep|drop>", "settle conflict n from :conflicts"),
+    "export": (1, 2, ":export csv [path]", "write every session to a CSV file"),
+    "q": (0, 0, ":q", "quit, flushing any pending push"),
 }
 
 # The whole resolution vocabulary. mine/theirs settle a field two machines
@@ -138,7 +146,7 @@ def parse_command(raw: str) -> Command | ParseError:
         return ParseError(f'unknown command ":{head}"')
     rest = rest.strip()
     args = tuple(rest.split())
-    low, high, usage = COMMANDS[name]
+    low, high, usage, _ = COMMANDS[name]
     if len(args) < low or (high is not None and len(args) > high):
         return ParseError(f"usage: {usage}")
     if name == "year" and not re.fullmatch(r"\d{4}", args[0]):

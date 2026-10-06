@@ -105,13 +105,16 @@ command, using that as a concrete (unshipped) example.
 **1. Register it in `parse.py`'s `COMMANDS` table:**
 
 ```python
-COMMANDS: dict[str, tuple[int, int | None, str]] = {
+COMMANDS: dict[str, tuple[int, int | None, str, str]] = {
     ...
-    "dup": (1, 1, ":dup <n|id>"),
+    "dup": (1, 1, ":dup <n|id>", "re-log a session as today"),
 }
 ```
 
-The tuple is `(min_args, max_args_or_None, usage_string)`. `parse_command`
+The tuple is `(min_args, max_args_or_None, usage_string, description)`.
+The last two are also what the `:help` page shows, so the command is
+documented in-app the moment it's registered
+(`test_every_command_documents_itself` fails on an empty description). `parse_command`
 already validates arity and unknown-command names against this table — you
 don't write that validation yourself. If the command needs its own
 value-level validation (like `:fix`'s action must be one of six words, or

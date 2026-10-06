@@ -197,10 +197,15 @@ Metrics don't need to be visible anywhere to be useful — see
 Anything starting with `:` is a command (a colon in the middle of a note,
 like `todo: rerun`, is just a colon — only a *leading* `:` triggers this).
 
+`:help` opens a separate page listing every command with its parameters,
+the logging grammar, and each of your skills with the metrics it accepts
+(e.g. `run <duration> [date] [distance=...] [note...]`). `esc` goes back.
+
 Daily use:
 
 | command | effect |
 | --- | --- |
+| `:help` | open the help page: every command, every skill, and their parameters |
 | `d <id>` | open the per-skill panel: a numbered list of recent sessions, streaks, and metric totals |
 | `:rm <n\|id>` | tombstone a session — an append-only delete, not an in-place edit |
 | `:edit <n\|id> <duration\|key=value>` | change a session's duration, or one of its custom metrics |

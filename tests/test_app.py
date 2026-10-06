@@ -16,7 +16,8 @@ from tenx.app import TenxApp
 from tenx.config import init
 from tenx.models import Skill
 from tenx.stats import FIXED_CUTS, year_grid
-from tenx.widgets import CommandBar, DetailPanel, Heatmap, SkillTable
+from tenx.parse import COMMANDS
+from tenx.widgets import CommandBar, DetailPanel, Heatmap, HelpScreen, SkillTable
 
 
 def pilot_test(func):
@@ -162,6 +163,27 @@ async def test_table_shows_days_since_last_session(tmp_path):
 
 
 # --- commands ---------------------------------------------------------------
+
+
+@pilot_test
+async def test_help_opens_a_page_listing_commands_and_skills(tmp_path):
+    app = make_app(tmp_path)
+    async with app.run_test() as pilot:
+        await submit(pilot, ":metric ml distance")
+        await submit(pilot, ":help")
+        assert isinstance(app.screen, HelpScreen)
+        page = [cell for _, rows in app.screen.sections for row in rows for cell in row]
+        for _, _, usage, _ in COMMANDS.values():
+            assert usage in page
+        assert "ml <duration> [date] [distance=...] [note...]" in page
+        assert "lc <duration> [date] [note...]" in page
+        assert app.screen.focused is None, "the help page must not take focus"
+
+        await pilot.press("escape")
+        await pilot.pause()
+        assert not isinstance(app.screen, HelpScreen)
+        assert app.query_one(Input).has_focus
+        assert app.query_one(Input).value == ""
 
 
 @pilot_test

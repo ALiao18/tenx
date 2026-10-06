@@ -18,7 +18,7 @@ class CommandBar(Vertical):
     hint_text = ""
 
     def compose(self) -> ComposeResult:
-        yield Input(placeholder="ml 1h30 attention ablation      (: for commands)", id="entry")
+        yield Input(placeholder="ml 1h30 attention ablation      (:help for commands)", id="entry")
         yield Static("", id="hint")
         yield Static("", id="echo")
         yield Static("", id="today")

@@ -39,7 +39,7 @@ from .stats import (
 )
 from .store import LoadResult, StoreError
 from .sync import Status, Syncer, status_label
-from .widgets import CommandBar, DetailPanel, Heatmap, SkillTable
+from .widgets import CommandBar, DetailPanel, Heatmap, HelpScreen, SkillTable
 
 DETAIL_LIMIT = 20
 
@@ -485,6 +485,10 @@ class TenxApp(App):
             self.bar.ok("default duration cleared")
         else:
             self.bar.ok(f"a bare skill name now logs {format_duration(self.config.default_minutes)}")
+
+    def _cmd_help(self, command: Command) -> None:
+        self.bar.ok("help")
+        self.push_screen(HelpScreen(self.data.skills, self.config.default_minutes))
 
     def _cmd_q(self, command: Command) -> None:
         self.exit()
