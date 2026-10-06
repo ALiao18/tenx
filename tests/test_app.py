@@ -119,6 +119,21 @@ async def test_today_line_reflects_whats_logged_so_far(tmp_path):
 
 
 @pilot_test
+async def test_today_line_leaves_out_archived_skills(tmp_path):
+    app = make_app(tmp_path)
+    async with app.run_test() as pilot:
+        await submit(pilot, "ml 1h30")
+        await submit(pilot, "lc 45m")
+        await submit(pilot, ":archive lc")
+        today = app.query_one(CommandBar).today_text
+        assert "leetcode" not in today
+        assert today == "today · machine learning 1h30 = 1h30"
+
+        await submit(pilot, ":archive ml")
+        assert app.query_one(CommandBar).today_text == "today · nothing logged yet"
+
+
+@pilot_test
 async def test_add_echo_includes_a_parsed_metric(tmp_path):
     app = make_app(tmp_path)
     async with app.run_test() as pilot:

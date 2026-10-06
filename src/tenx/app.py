@@ -211,10 +211,13 @@ class TenxApp(App):
         return "  ·  ".join(parts)
 
     def _today_line(self) -> str:
+        """Archived skills are left out, as they are from the heatmap and the
+        global streak - archiving means "stop showing me this"."""
+        archived = {s.id for s in self.data.skills if s.archived}
         per_skill = {
             skill: minutes
             for skill, daily in self.agg.daily_by_skill.items()
-            if (minutes := daily.get(self.today, 0))
+            if skill not in archived and (minutes := daily.get(self.today, 0))
         }
         if not per_skill:
             return "today · nothing logged yet"
