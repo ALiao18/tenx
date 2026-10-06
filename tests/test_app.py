@@ -148,6 +148,19 @@ async def test_backfill_with_a_date(tmp_path):
         assert session.note == "deep work"
 
 
+@pilot_test
+async def test_table_shows_days_since_last_session(tmp_path):
+    app = make_app(tmp_path)
+    async with app.run_test() as pilot:
+        await submit(pilot, "ml 1h")
+        await submit(pilot, "lc 45m -3")
+        last = {row[0]: row[5] for row in cells(app)}
+        assert last == {"machine learning": "today", "leetcode": "3d ago"}
+
+        await submit(pilot, "d lc")
+        assert "last 3d ago" in app.query_one(DetailPanel).heading
+
+
 # --- commands ---------------------------------------------------------------
 
 

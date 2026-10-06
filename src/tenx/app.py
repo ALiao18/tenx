@@ -30,6 +30,8 @@ from .stats import (
     aggregate,
     bucket_thresholds,
     current_streak,
+    days_since_last,
+    format_ago,
     level_label,
     longest_streak,
     metric_totals,
@@ -542,6 +544,7 @@ class TenxApp(App):
             f"{hours:,.1f}h",
             level_label(hours),
             f"streak {current_streak(days, self.today)}d (longest {longest_streak(days)}d)",
+            f"last {format_ago(days_since_last(days, self.today))}",
             f"{self.agg.count_by_skill.get(skill_id, 0)} sessions",
         ]
         parts += [

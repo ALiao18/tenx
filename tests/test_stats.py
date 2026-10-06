@@ -12,6 +12,8 @@ from tenx.stats import (
     bucket,
     bucket_thresholds,
     current_streak,
+    days_since_last,
+    format_ago,
     level,
     level_label,
     longest_streak,
@@ -94,6 +96,26 @@ def test_two_silent_days_reset_the_streak():
 def test_single_day_and_empty():
     assert current_streak({TODAY}, TODAY) == 1
     assert current_streak(set(), TODAY) == 0
+
+
+def test_days_since_last():
+    assert days_since_last({TODAY}, TODAY) == 0
+    assert days_since_last({TODAY - dt.timedelta(days=12), TODAY - dt.timedelta(days=40)}, TODAY) == 12
+    assert days_since_last(set(), TODAY) is None
+
+
+def test_days_since_last_ignores_future_days():
+    """Another machine's clock running ahead must not produce a negative gap."""
+    tomorrow = TODAY + dt.timedelta(days=1)
+    assert days_since_last({tomorrow, TODAY - dt.timedelta(days=3)}, TODAY) == 3
+    assert days_since_last({tomorrow}, TODAY) is None
+
+
+def test_format_ago():
+    assert format_ago(None) == "-"
+    assert format_ago(0) == "today"
+    assert format_ago(1) == "1d ago"
+    assert format_ago(30) == "30d ago"
 
 
 def test_longest_streak():

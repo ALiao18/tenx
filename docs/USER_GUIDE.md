@@ -91,7 +91,8 @@ tenx
   year, and any warnings (unreadable lines, unresolved conflicts).
 - **Skill table** — one row per non-archived skill, sorted by total minutes:
   cumulative hours, level (`10²` = you've logged over 100 hours), a progress
-  bar to the next power of ten, current streak, and a 30-day sparkline.
+  bar to the next power of ten, current streak, how many days ago you last
+  logged it (`today`, `3d ago`, or `-` if never), and a 30-day sparkline.
 - **Heatmap** — one column per week, one row per weekday, colored by how much
   you logged that day (5 levels: none, then four buckets from the quantiles
   of your own non-zero days — or fixed 30/60/120-minute cuts until you have

@@ -334,8 +334,8 @@ Deliberately not built, roughly in order of how much they'd add:
   the natural place to grow a small predicate/aggregation layer if this is
   wanted.
 - **Metrics in the dashboard.** `SkillTable` only ever shows hours, level,
-  streak, and the minutes-based sparkline — metrics currently surface only
-  in the detail view and the export. Adding a metric column would mean
+  streak, days since last session, and the minutes-based sparkline —
+  metrics currently surface only in the detail view and the export. Adding a metric column would mean
   deciding what to show for skills without that metric declared, and how
   many extra columns the table can carry before it stops fitting a normal
   terminal width.

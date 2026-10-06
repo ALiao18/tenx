@@ -10,10 +10,10 @@ git, with append-only logs that union-merge instead of conflicting.
 ```
 ⇅ synced  ·  1,553.5h across 5 skills  ·  streak 5d (longest 20d)  ·  2026
 
-  skill              hours    level   progress          streak   last 30d
-  machine learning   614.0    10²     ███████░░░  57%   12d      ▂▅█▃▁▄█▂
-  leetcode            88.5    10¹     ██████░░░░  65%   12d      ▁▃▂▅▂▁▃▁
-  poker                75.4    10¹     ████░░░░░░  23%    3d      ▅▁▁▇▂▁▁▄
+  skill              hours    level   progress          streak   last      last 30d
+  machine learning   614.0    10²     ███████░░░  57%   12d      today     ▂▅█▃▁▄█▂
+  leetcode            88.5    10¹     ██████░░░░  65%   12d      today     ▁▃▂▅▂▁▃▁
+  poker                75.4    10¹     ████░░░░░░  23%    3d      1d ago    ▅▁▁▇▂▁▁▄
 
   Aug   Sep   Oct   Nov   Dec   Jan   Feb   Mar   Apr   May   Jun   Jul
   ░▓█░░▒▓█▒░░▓█▓▒░░░▒▓█▓▒░░▒▓██▓▒░░▒▓█▓▒░▒▓█▓░░▒▓█▓▒░░▒▓█▓▒▒░▓█▓▒░░▒▓█

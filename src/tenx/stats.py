@@ -97,6 +97,24 @@ def current_streak(days: set[dt.date], today: dt.date) -> int:
     return length
 
 
+def days_since_last(days: set[dt.date], today: dt.date) -> int | None:
+    """Days since the most recent session on or before today; None if there is
+    none. A future-dated day (another machine's clock running ahead) is
+    ignored rather than shown as a negative gap."""
+    past = [day for day in days if day <= today]
+    if not past:
+        return None
+    return (today - max(past)).days
+
+
+def format_ago(gap: int | None) -> str:
+    if gap is None:
+        return "-"
+    if gap == 0:
+        return "today"
+    return f"{gap}d ago"
+
+
 def longest_streak(days: set[dt.date]) -> int:
     best = run = 0
     previous: dt.date | None = None

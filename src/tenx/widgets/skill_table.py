@@ -1,4 +1,5 @@
-"""Dashboard rows: hours, level, progress to the next decade, streak, sparkline."""
+"""Dashboard rows: hours, level, progress to the next decade, streak, days
+since last practised, sparkline."""
 
 from __future__ import annotations
 
@@ -7,7 +8,16 @@ import datetime as dt
 from textual.widgets import DataTable
 
 from ..models import Skill
-from ..stats import SPARKLINE_DAYS, Aggregate, current_streak, level_label, progress, sparkline_values
+from ..stats import (
+    SPARKLINE_DAYS,
+    Aggregate,
+    current_streak,
+    days_since_last,
+    format_ago,
+    level_label,
+    progress,
+    sparkline_values,
+)
 
 SPARK = " ▁▂▃▄▅▆▇█"
 BAR_WIDTH = 10
@@ -33,7 +43,7 @@ class SkillTable(DataTable):
     def on_mount(self) -> None:
         self.cursor_type = "none"
         self.show_cursor = False
-        self.add_columns("skill", "hours", "level", "progress", "streak", f"last {SPARKLINE_DAYS}d")
+        self.add_columns("skill", "hours", "level", "progress", "streak", "last", f"last {SPARKLINE_DAYS}d")
 
     def update_rows(self, skills: list[Skill], agg: Aggregate, today: dt.date) -> None:
         self.clear()
@@ -48,6 +58,7 @@ class SkillTable(DataTable):
                 level_label(hours),
                 f"{progress_bar(progress(hours))} {progress(hours) * 100:3.0f}%",
                 f"{streak}d" if streak else "-",
+                format_ago(days_since_last(days, today)),
                 sparkline(sparkline_values(agg.daily_by_skill.get(skill_id, {}), today)),
             )
 
